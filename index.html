@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,9 +15,18 @@
             flex-direction: column;
             align-items: center;
         }
-        h1 { color: #333; margin-bottom: 5px; }
-        .subtitle { color: #666; margin-bottom: 30px; font-size: 14px; }
-        
+
+        h1 {
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
         /* Kontainer Utama Pohon */
         .tree-container {
             display: flex;
@@ -43,18 +53,20 @@
             background: white;
             padding: 8px 15px;
             border-radius: 50px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
             cursor: pointer;
             border: 2px solid #e0e0e0;
             transition: all 0.2s ease;
             position: relative;
             user-select: none;
         }
+
         .family-node:hover {
             transform: translateY(-2px);
             border-color: #2196F3;
             box-shadow: 0 6px 12px rgba(33, 150, 243, 0.2);
         }
+
         .avatar {
             width: 45px;
             height: 45px;
@@ -64,6 +76,7 @@
             margin-right: 12px;
             border: 1px solid #ccc;
         }
+
         .nickname {
             font-weight: 600;
             color: #333;
@@ -71,6 +84,7 @@
             margin-right: 8px;
             white-space: nowrap;
         }
+
         .btn-add-node {
             background: #4CAF50;
             color: white;
@@ -86,6 +100,7 @@
             cursor: pointer;
             transition: background 0.2s;
         }
+
         .btn-add-node:hover {
             background: #43A047;
         }
@@ -93,8 +108,11 @@
         /* Dialog Box / Pop-up Form Sesuai Sketsa */
         .modal-overlay {
             position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.5);
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
             display: none;
             justify-content: center;
             align-items: center;
@@ -102,19 +120,27 @@
             padding: 10px;
             box-sizing: border-box;
         }
+
         .modal-box {
             background: white;
             padding: 25px;
             border-radius: 12px;
             width: 100%;
             max-width: 400px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
             box-sizing: border-box;
         }
-        .modal-box h3 { margin-top: 0; color: #2196F3; margin-bottom: 20px; }
+
+        .modal-box h3 {
+            margin-top: 0;
+            color: #2196F3;
+            margin-bottom: 20px;
+        }
+
         .form-group {
             margin-bottom: 15px;
         }
+
         .form-group label {
             display: block;
             margin-bottom: 5px;
@@ -122,6 +148,7 @@
             font-weight: 600;
             color: #555;
         }
+
         .form-group input {
             width: 100%;
             padding: 10px 12px;
@@ -130,17 +157,20 @@
             box-sizing: border-box;
             font-size: 14px;
         }
+
         .form-group input:disabled {
             background: #f0f0f0;
             border-color: #ddd;
             color: #666;
         }
+
         .modal-actions {
             display: flex;
             justify-content: flex-end;
             gap: 10px;
             margin-top: 25px;
         }
+
         .btn {
             padding: 10px 22px;
             border: none;
@@ -149,17 +179,32 @@
             font-weight: bold;
             font-size: 14px;
         }
-        .btn-primary { background: #2196F3; color: white; }
-        .btn-primary:hover { background: #1E88E5; }
-        .btn-secondary { background: #e0e0e0; color: #333; }
-        .btn-secondary:hover { background: #d6d6d6; }
+
+        .btn-primary {
+            background: #2196F3;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #1E88E5;
+        }
+
+        .btn-secondary {
+            background: #e0e0e0;
+            color: #333;
+        }
+
+        .btn-secondary:hover {
+            background: #d6d6d6;
+        }
     </style>
 </head>
+
 <body>
 
     <h1>Pohon Silsilah Keluarga</h1>
     <div class="subtitle">Klik anggota keluarga untuk melihat/mengubah detail. Klik (+) untuk menambah keturunan.</div>
-    
+
     <div id="tree" class="tree-container">Memuat data silsilah...</div>
 
     <!-- Dialog Box / Pop-up -->
@@ -168,7 +213,7 @@
             <h3 id="modalTitle">Detail Anggota Keluarga</h3>
             <form id="familyForm">
                 <input type="hidden" id="actionType" value="tambah">
-                
+
                 <div class="form-group">
                     <label>Nama Lengkap (ID Unik - Tidak Bisa Diubah)</label>
                     <input type="text" id="inpNamaLengkap" required placeholder="Contoh: Ahmad Yusuf Setiawan">
@@ -190,10 +235,11 @@
                     <input type="text" id="inpKontak" placeholder="08xxxxxxxxxx">
                 </div>
                 <div class="form-group">
-                    <label>Link Foto URL</label>
-                    <input type="text" id="inpFotoURL" placeholder="https://link-foto.com/gambar.jpg">
+                    <label>Foto Profil (Upload)</label>
+                    <input type="file" id="inpFotoFile" accept="image/*">
+                    <input type="hidden" id="inpFotoURL"> <!-- Untuk menyimpan URL yang sudah ada -->
                 </div>
-                
+
                 <!-- Input Tersembunyi untuk Mengatur Hubungan Relasi -->
                 <input type="hidden" id="inpAyah">
                 <input type="hidden" id="inpIbu">
@@ -209,8 +255,8 @@
 
     <script>
         // URL aplikasi web deploy dari google sheet 
-        const API_URL = "https://script.google.com/macros/s/AKfycbxRulVBJaZtjkXfDlKNi3pBc0H9b7Xu9BJ5gylSQiSXQZ0KBD13o82y136LDgszyDiy/exec"; 
-        
+        const API_URL = "https://script.google.com/macros/s/AKfycbxRulVBJaZtjkXfDlKNi3pBc0H9b7Xu9BJ5gylSQiSXQZ0KBD13o82y136LDgszyDiy/exec";
+
         let familyData = [];
 
         // Ambil data otomatis dari Google Sheets
@@ -229,14 +275,14 @@
             const treeContainer = document.getElementById('tree');
             treeContainer.innerHTML = "";
 
-            if(familyData.length === 0) {
+            if (familyData.length === 0) {
                 treeContainer.innerHTML = `<button class="btn btn-primary" onclick="openTambahRoot()">Tambah Anggota Pertama</button>`;
                 return;
             }
 
             // Mencari generasi paling tua (yang kolom Ayah dan Ibu kosong di database)
             const generasi1 = familyData.filter(person => !person["Ayah"] && !person["Ibu"]);
-            
+
             const level1Div = document.createElement('div');
             level1Div.className = "level";
 
@@ -251,7 +297,7 @@
         function createNodeHTML(person) {
             const node = document.createElement('div');
             node.className = "family-node";
-            
+
             const foto = person["Foto URL"] || "https://www.w3schools.com/howto/img_avatar.png";
             node.innerHTML = `
                 <img src="${foto}" class="avatar" alt="foto">
@@ -261,7 +307,7 @@
 
             // Logic klik: Jika klik tombol (+) maka tambah anak, jika klik area lain maka lihat detail
             node.addEventListener('click', (e) => {
-                if(e.target.className !== 'btn-add-node') {
+                if (e.target.className !== 'btn-add-node') {
                     openModeLihat(person);
                 } else {
                     e.stopPropagation(); // Mencegah memicu klik pada node utama
@@ -294,7 +340,7 @@
             document.getElementById('inpNamaLengkap').disabled = false;
             // Secara default, sistem mengarahkan nama pengklik ke kolom Ayah.
             // Keluarga bisa memindahkan ke kolom Ibu secara manual di Google Sheets jika yang diklik adalah Ibu.
-            document.getElementById('inpAyah').value = namaOrangTua; 
+            document.getElementById('inpAyah').value = namaOrangTua;
             document.getElementById('inpIbu').value = "";
             setFormDisabled(false);
             btnSubmit.innerText = "Simpan";
@@ -304,7 +350,7 @@
         // Mode Lihat Detail (Input Terkunci di Awal - Sesuai Permintaan)
         function openModeLihat(person) {
             document.getElementById('actionType').value = "ubah";
-            
+
             document.getElementById('inpNamaLengkap').value = person["Nama Lengkap"];
             document.getElementById('inpNamaLengkap').disabled = true; // ID nama lengkap tidak boleh diubah untuk menjaga relasi
             document.getElementById('inpPanggilan').value = person["Panggilan"];
@@ -323,40 +369,59 @@
 
         // Mengunci atau membuka form ketik
         function setFormDisabled(status) {
-            document.getElementById('inpPanggilan').disabled = status;
+            document.getElementById('inpNamaPanggilan').disabled = status;
             document.getElementById('inpTanggalLahir').disabled = status;
             document.getElementById('inpTempatTinggal').disabled = status;
             document.getElementById('inpKontak').disabled = status;
-            document.getElementById('inpFotoURL').disabled = status;
+            document.getElementById('inpFotoFile').disabled = status;
         }
 
         // Aksi Submit Form (Simpan/Ubah Data)
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
             const action = document.getElementById('actionType').value;
-            
-            // Alur Logika Tombol Sesuai Permintaan Anda:
-            // Jika tombol bertuliskan "Mengubah", buka kunci input agar bisa diketik, lalu ganti teks jadi "Simpan"
+
             if (btnSubmit.innerText === "Mengubah") {
                 setFormDisabled(false);
                 btnSubmit.innerText = "Simpan";
                 return;
             }
 
-            // Jika bertuliskan "Simpan", proses pengiriman data ke Google Sheets dimulai
-            btnSubmit.innerText = "Memproses...";
+            btnSubmit.innerText = "Memproses & Upload...";
             btnSubmit.disabled = true;
+
+            const fileInput = document.getElementById('inpFotoFile');
+            let fotoBase64 = "";
+            let fotoNamaFile = "";
+
+            // Jika user memilih file baru untuk diupload
+            if (fileInput.files.length > 0) {
+                const file = fileInput.files[0];
+                fotoNamaFile = document.getElementById('inpNamaLengkap').value + "_" + file.name;
+
+                // Fungsi pembantu membaca file menjadi base64 string
+                const toBase64 = file => new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.readAsDataURL(file);
+                    reader.onload = () => resolve(reader.result);
+                    reader.onerror = error => reject(error);
+                });
+
+                fotoBase64 = await toBase64(file);
+            }
 
             const payload = {
                 action: action,
                 NamaLengkap: document.getElementById('inpNamaLengkap').value,
-                Panggilan: document.getElementById('inpPanggilan').value,
+                Panggilan: document.getElementById('inpNamaPanggilan').value,
                 TanggalLahir: document.getElementById('inpTanggalLahir').value,
                 TempatTinggal: document.getElementById('inpTempatTinggal').value,
                 Kontak: document.getElementById('inpKontak').value,
-                FotoURL: document.getElementById('inpFotoURL').value,
-                Ayah: document.getElementById('inpAyah').value,
-                Ibu: document.getElementById('inpIbu').value,
+                FotoURL: document.getElementById('inpFotoURL').value, // Mengirim URL lama jika foto tidak diganti
+                FotoBase64: fotoBase64,   // Data file gambar baru
+                FotoNamaFile: fotoNamaFile, // Nama file gambar baru
+                Ayah: document.getElementById('inpOrangTua1').value,
+                Ibu: document.getElementById('inpOrangTua2').value,
                 Pasangan: document.getElementById('inpPasangan').value
             };
 
@@ -366,16 +431,16 @@
                     body: JSON.stringify(payload)
                 });
                 const result = await response.json();
-                
-                if(result.status === "success") {
-                    alert("Data keluarga berhasil diperbarui!");
+
+                if (result.status === "success") {
+                    alert("Data dan foto berhasil disimpan!");
                     closeModal();
-                    fetchFamilyData(); // Muat ulang visual pohon dengan data baru
+                    fetchFamilyData();
                 } else {
-                    alert("Gagal menyimpan: " + result.message);
+                    alert("Gagal: " + result.message);
                 }
             } catch (error) {
-                alert("Terjadi masalah koneksi ke server database.");
+                alert("Terjadi kesalahan koneksi server.");
             } finally {
                 btnSubmit.disabled = false;
             }
@@ -385,4 +450,5 @@
         fetchFamilyData();
     </script>
 </body>
+
 </html>
