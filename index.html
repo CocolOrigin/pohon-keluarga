@@ -369,7 +369,7 @@
 
         // Mengunci atau membuka form ketik
         function setFormDisabled(status) {
-            document.getElementById('inpNamaPanggilan').disabled = status;
+            document.getElementById('inpPanggilan').disabled = status;
             document.getElementById('inpTanggalLahir').disabled = status;
             document.getElementById('inpTempatTinggal').disabled = status;
             document.getElementById('inpKontak').disabled = status;
@@ -413,7 +413,7 @@
             const payload = {
                 action: action,
                 NamaLengkap: document.getElementById('inpNamaLengkap').value,
-                Panggilan: document.getElementById('inpNamaPanggilan').value,
+                Panggilan: document.getElementById('inpPanggilan').value,
                 TanggalLahir: document.getElementById('inpTanggalLahir').value,
                 TempatTinggal: document.getElementById('inpTempatTinggal').value,
                 Kontak: document.getElementById('inpKontak').value,
