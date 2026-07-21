@@ -1,0 +1,204 @@
+/* ==========================================================================
+   FAMILY TREE - DESIGN SYSTEM
+   ========================================================================== */
+
+:root {
+    --bg-main: #f8fafc;
+    --bg-card: #ffffff;
+    --text-main: #0f172a;
+    --text-muted: #64748b;
+    --border-color: #e2e8f0;
+
+    /* Gender Accent Colors */
+    --male-color: #3b82f6;
+    --male-bg-light: #eff6ff;
+    --female-color: #ec4899;
+    --female-bg-light: #fdf2f8;
+
+    /* Memorial Accent Color */
+    --memorial-gold: #d97706;
+
+    /* Dynamic Tree Style Variables */
+    --tree-stroke-width: 2px;
+    --tree-stroke-color: #94a3b8;
+    --photo-outline-width: 3px;
+    --photo-outline-gap: 3px;
+
+    --card-width: 170px;
+    --card-height: 160px;
+    --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.08);
+    --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
+body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: var(--bg-main); color: var(--text-main); overflow: hidden; width: 100vw; height: 100vh; }
+
+/* App Header */
+.app-header {
+    position: fixed; top: 0; left: 0; right: 0; height: 64px;
+    background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border-color); display: flex; align-items: center; justify-content: space-between; padding: 0 24px; z-index: 100;
+}
+.header-brand { display: flex; align-items: center; gap: 12px; }
+.brand-icon { font-size: 24px; color: #059669; background: #ecfdf5; padding: 10px; border-radius: 10px; }
+.header-brand h1 { font-size: 18px; font-weight: 700; color: #0f172a; }
+.header-brand p { font-size: 11px; color: var(--text-muted); }
+
+/* Switch Mode Edit */
+.header-actions { display: flex; align-items: center; gap: 16px; }
+.mode-toggle-container { display: flex; align-items: center; gap: 10px; background: #f1f5f9; padding: 6px 14px; border-radius: 30px; font-size: 13px; font-weight: 600; }
+.switch { position: relative; display: inline-block; width: 44px; height: 24px; }
+.switch input { opacity: 0; width: 0; height: 0; }
+.slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #cbd5e1; transition: .3s; border-radius: 24px; }
+.slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .3s; border-radius: 50%; }
+input:checked + .slider { background-color: #2563eb; }
+input:checked + .slider:before { transform: translateX(20px); }
+
+/* Canvas Container & Viewport */
+.canvas-container {
+    width: 100vw; height: 100vh; position: relative; overflow: hidden; cursor: grab;
+    background-image: radial-gradient(#cbd5e1 1px, transparent 1px); background-size: 24px 24px;
+}
+.canvas-container:active { cursor: grabbing; }
+
+.tree-viewport {
+    position: absolute; top: 0; left: 0; width: 10000px; height: 10000px;
+    transform-origin: 0 0; will-change: transform;
+}
+.tree-svg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
+.tree-nodes { position: absolute; top: 0; left: 0; }
+.canvas-actions-layer { position: absolute; top: 0; left: 0; pointer-events: none; }
+
+/* Member Card Node */
+.node-card {
+    position: absolute; width: var(--card-width); background: var(--bg-card); border-radius: 12px; padding: 14px 10px;
+    box-shadow: var(--shadow-md); border: 1px solid var(--border-color); display: flex; flex-direction: column; align-items: center; text-align: center; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;
+}
+.node-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
+
+/* Avatar dengan Outline & Gap */
+.avatar-wrapper { position: relative; width: 58px; height: 58px; margin-bottom: 8px; }
+.avatar-img {
+    width: 100%; height: 100%; border-radius: 50%; object-fit: cover; background: #f1f5f9;
+    outline-style: solid; outline-width: var(--photo-outline-width); outline-offset: var(--photo-outline-gap);
+}
+.node-card.male .avatar-img { outline-color: var(--male-color); }
+.node-card.female .avatar-img { outline-color: var(--female-color); }
+.node-card.deceased .avatar-img { filter: grayscale(80%) sepia(20%); outline-color: var(--memorial-gold) !important; }
+
+.deceased-ribbon {
+    position: absolute; bottom: -2px; right: -2px; background: var(--memorial-gold); color: white; width: 20px; height: 20px;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+/* Tipografi Nama (Nama Panggilan Atas Tebal, Nama Lengkap Bawah) */
+.node-primary-name {
+    font-size: 13px; font-weight: 700; color: var(--text-main); line-height: 1.2; margin-bottom: 2px; word-break: break-word;
+}
+.node-secondary-name {
+    font-size: 11px; font-weight: 500; color: var(--text-muted); line-height: 1.2; margin-bottom: 6px; word-break: break-word;
+}
+
+.node-badge { font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: 12px; }
+.node-card.male .node-badge { background: var(--male-bg-light); color: var(--male-color); }
+.node-card.female .node-badge { background: var(--female-bg-light); color: var(--female-color); }
+.node-card.deceased .node-badge { background: #fef3c7; color: var(--memorial-gold); }
+
+/* Expand/Collapse Button */
+.btn-toggle-subtree {
+    position: absolute; bottom: -12px; left: 50%; transform: translateX(-50%); width: 24px; height: 24px;
+    border-radius: 50%; background: white; border: 1px solid #cbd5e1; font-size: 11px; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.1); transition: transform 0.2s;
+}
+.btn-toggle-subtree:hover { transform: translateX(-50%) scale(1.15); }
+
+/* Floating Action Buttons di Canvas (Mode Edit) */
+.canvas-btn-action {
+    position: absolute; pointer-events: auto; background: white; border: 1px solid #cbd5e1;
+    border-radius: 20px; padding: 5px 10px; font-size: 11px; font-weight: 700; color: #334155;
+    cursor: pointer; display: flex; align-items: center; gap: 5px; box-shadow: var(--shadow-md); transition: all 0.2s ease;
+}
+.canvas-btn-action:hover { background: #2563eb; color: white; border-color: #2563eb; transform: scale(1.08); }
+.canvas-btn-action.btn-canvas-spouse { border-style: dashed; border-color: #ec4899; color: #ec4899; }
+.canvas-btn-action.btn-canvas-spouse:hover { background: #ec4899; color: white; }
+
+/* Controls Floating Bar */
+.floating-controls {
+    position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(12px); border: 1px solid var(--border-color); padding: 8px 16px; border-radius: 40px; box-shadow: var(--shadow-lg); display: flex; align-items: center; gap: 12px; z-index: 90;
+}
+.control-group { display: flex; align-items: center; gap: 8px; }
+.floating-controls button { background: transparent; border: none; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; color: #475569; display: flex; align-items: center; justify-content: center; font-size: 14px; }
+.floating-controls button:hover { background: #f1f5f9; color: #0f172a; }
+.floating-controls input[type="range"] { width: 100px; accent-color: #2563eb; cursor: pointer; }
+.zoom-text { font-size: 12px; font-weight: 600; color: var(--text-muted); min-width: 40px; }
+.control-divider { width: 1px; height: 20px; background: var(--border-color); }
+.btn-icon-label { width: auto !important; border-radius: 20px !important; padding: 0 12px !important; font-size: 12px !important; font-weight: 600; gap: 6px; }
+
+/* Popover Pengaturan Style Garis */
+.popover-menu {
+    position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); background: white; width: 280px;
+    border-radius: 16px; box-shadow: var(--shadow-lg); border: 1px solid var(--border-color); padding: 16px; z-index: 95;
+}
+.popover-menu.hidden { display: none; }
+.popover-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--border-color); }
+.popover-header h4 { font-size: 14px; font-weight: 700; }
+.popover-header button { background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 16px; }
+.setting-item { margin-bottom: 12px; }
+.setting-item label { display: block; font-size: 11px; font-weight: 600; color: var(--text-muted); margin-bottom: 4px; }
+.setting-item input[type="range"] { width: 100%; accent-color: #2563eb; }
+
+/* Modals */
+.modal-backdrop { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(15, 23, 42, 0.4); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; z-index: 200; padding: 16px; }
+.modal-backdrop.hidden { display: none; }
+.modal-card { background: white; border-radius: 20px; max-width: 500px; width: 100%; max-height: 90vh; overflow-y: auto; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1); }
+.modal-header { padding: 18px 24px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; }
+.modal-header h3 { font-size: 16px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+.btn-close-modal { background: none; border: none; font-size: 18px; color: var(--text-muted); cursor: pointer; }
+
+#personForm { padding: 20px 24px; display: flex; flex-direction: column; gap: 14px; }
+.form-row { display: flex; gap: 12px; }
+.form-group { flex: 1; display: flex; flex-direction: column; gap: 4px; }
+.form-group.full-width { width: 100%; }
+.form-group label { font-size: 12px; font-weight: 600; color: #334155; }
+.required { color: #ef4444; }
+.form-group input, .form-group select, .form-group textarea { padding: 10px 12px; border: 1px solid var(--border-color); border-radius: 8px; font-size: 13px; font-family: inherit; }
+.form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: #2563eb; outline: none; box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1); }
+
+/* Gender Toggle Buttons in Modal (Glow Blue / Glow Pink) */
+.gender-selector { display: flex; gap: 10px; width: 100%; }
+.btn-gender { flex: 1; padding: 10px; border: 1px solid var(--border-color); background: #f8fafc; border-radius: 10px; font-size: 13px; font-weight: 600; color: var(--text-muted); cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.2s; }
+.btn-gender.btn-male.active-male { background: var(--male-color); color: white; border-color: var(--male-color); box-shadow: 0 4px 12px rgba(59, 130, 246, 0.35); }
+.btn-gender.btn-female.active-female { background: var(--female-color); color: white; border-color: var(--female-color); box-shadow: 0 4px 12px rgba(236, 72, 153, 0.35); }
+
+/* Detail Modal View (Aesthetic Memorial "Mengenang" for Deceased) */
+.detail-card { overflow: hidden; padding: 0; }
+.detail-header-normal { padding: 24px; background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); text-align: center; position: relative; }
+.detail-header-memorial { padding: 32px 24px 24px 24px; background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%); color: white; text-align: center; position: relative; border-bottom: 3px solid var(--memorial-gold); }
+.memorial-badge { display: inline-flex; align-items: center; gap: 6px; background: rgba(217, 119, 6, 0.2); border: 1px solid var(--memorial-gold); color: #fef3c7; font-size: 11px; font-weight: 600; padding: 4px 12px; border-radius: 20px; margin-bottom: 12px; text-transform: uppercase; }
+.detail-avatar-container { width: 90px; height: 90px; margin: 0 auto 12px auto; }
+.detail-avatar { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; background: white; box-shadow: var(--shadow-md); }
+.detail-header-memorial .detail-avatar { filter: grayscale(70%) sepia(20%); border: 3px solid var(--memorial-gold); }
+.detail-header-memorial .detail-name { font-family: 'Playfair Display', serif; color: #fef3c7; font-size: 20px; }
+.detail-lifespan { font-size: 13px; color: #94a3b8; margin-top: 4px; }
+
+.detail-body { padding: 24px; display: flex; flex-direction: column; gap: 16px; }
+.detail-info-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+.info-item { background: #f8fafc; padding: 10px 12px; border-radius: 10px; border: 1px solid #f1f5f9; }
+.info-item .label { font-size: 10px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; display: block; margin-bottom: 2px; }
+.info-item .value { font-size: 13px; font-weight: 600; color: var(--text-main); }
+
+.modal-footer { display: flex; justify-content: flex-end; gap: 10px; margin-top: 10px; padding-top: 14px; border-top: 1px solid var(--border-color); }
+.btn { padding: 10px 18px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; border: none; display: inline-flex; align-items: center; gap: 8px; transition: all 0.2s; }
+.btn-primary { background: #2563eb; color: white; }
+.btn-primary:hover { background: #1d4ed8; }
+.btn-secondary { background: #f1f5f9; color: #475569; }
+.btn-danger { background: #fee2e2; color: #dc2626; }
+
+/* Loading Spinner & Toast */
+.loading-overlay { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(255, 255, 255, 0.95); padding: 24px 32px; border-radius: 16px; box-shadow: var(--shadow-lg); display: flex; flex-direction: column; align-items: center; gap: 12px; z-index: 150; }
+.loading-overlay.hidden { display: none; }
+.spinner { width: 32px; height: 32px; border: 3px solid #e2e8f0; border-top-color: #2563eb; border-radius: 50%; animation: spin 0.8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.toast { position: fixed; top: 80px; right: 24px; background: #0f172a; color: white; padding: 12px 20px; border-radius: 12px; font-size: 13px; font-weight: 600; box-shadow: var(--shadow-lg); z-index: 300; transition: all 0.3s ease; }
+.toast.hidden { opacity: 0; transform: translateY(-10px); pointer-events: none; }
